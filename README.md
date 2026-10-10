@@ -54,6 +54,28 @@ Run the same line again to update.
 2. No administrator rights are needed. You can choose to start GlanceSwitch when you sign in.
 3. At the end the installer checks the installation and reports any problem.
 
+## Blocked by macOS or Windows?
+
+The installers are not signed with a paid certificate, so the system may block them.
+These commands remove the "downloaded from the internet" mark.
+
+**macOS** ("Apple could not verify…"), in Terminal:
+```bash
+# the downloaded installer
+xattr -d com.apple.quarantine ~/Downloads/GlanceSwitch-*.pkg
+```
+```bash
+# the installed app: unblock and open
+xattr -dr com.apple.quarantine /Applications/GlanceSwitch.app && open /Applications/GlanceSwitch.app
+```
+
+**Windows** ("Windows protected your PC"), in PowerShell:
+```powershell
+Unblock-File "$env:USERPROFILE\Downloads\GlanceSwitch-Setup-*.exe"
+```
+
+Or use the [one-line install](#quick-install-one-line-no-security-prompts), which is never blocked.
+
 ## Getting started
 
 1. **Arrange Screens…** (menu bar or tray icon): place your screens and the camera.
@@ -99,6 +121,24 @@ anywhere.
 וב-Windows מדביקים ב-PowerShell
 `irm https://raw.githubusercontent.com/orelrockah/GlanceSwitch/main/install.ps1 | iex`.
 הסקריפט מוריד את הגרסה האחרונה, בודק את טביעת האצבע שלה ומתקין.
+
+**נחסם?** במק מריצים בטרמינל:
+
+```bash
+xattr -d com.apple.quarantine ~/Downloads/GlanceSwitch-*.pkg
+```
+
+ואם האפליקציה עצמה נחסמת אחרי ההתקנה:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/GlanceSwitch.app && open /Applications/GlanceSwitch.app
+```
+
+ב-Windows מריצים ב-PowerShell:
+
+```powershell
+Unblock-File "$env:USERPROFILE\Downloads\GlanceSwitch-Setup-*.exe"
+```
 
 **במק:** אם מופיעה ההודעה "Apple could not verify", לחצו `Done`, פתחו את **הגדרות המערכת ←
 פרטיות ואבטחה**, גללו למטה ולחצו `Open Anyway` ליד קובץ ההתקנה. **ב-Windows:** אם מופיע
