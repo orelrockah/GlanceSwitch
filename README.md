@@ -19,8 +19,12 @@ Intel Macs are not supported yet.
 ## Install
 
 **macOS**
-1. Open the `.pkg`. If macOS says it is from an unidentified developer, right-click it,
-   choose **Open**, then **Open** again.
+1. Open the `.pkg`. Because the installer is not signed by Apple, macOS shows
+   *"Apple could not verify…"*. Click **Done** (not *Move to Trash*), open
+   **System Settings → Privacy & Security**, scroll down and click **Open Anyway**
+   next to the GlanceSwitch installer, then confirm with your password or Touch ID.
+   Or, in Terminal: `xattr -d com.apple.quarantine ~/Downloads/GlanceSwitch-*.pkg`
+   and open the file again.
 2. Follow the installer. At the end it checks the installation and reports any problem.
 3. Open **GlanceSwitch** from Applications. The eye icon appears in the menu bar. Allow
    **Camera**, **Accessibility** and, for the Double-Ctrl trigger, **Input Monitoring**.
@@ -70,5 +74,9 @@ anywhere.
 הרשת. מורידים את קובץ ההתקנה מ-[הגרסה האחרונה](https://github.com/orelrockah/GlanceSwitch/releases/latest):
 `.pkg` למק עם Apple Silicon, או `.exe` ל-Windows. ההתקנה בודקת את עצמה בסוף. התמונה מהמצלמה
 מעובדת רק במחשב שלך, ושום דבר לא נשמר או נשלח.
+
+**במק:** אם מופיעה ההודעה "Apple could not verify", לחצו `Done`, פתחו את **הגדרות המערכת ←
+פרטיות ואבטחה**, גללו למטה ולחצו `Open Anyway` ליד קובץ ההתקנה. **ב-Windows:** אם מופיע
+"Windows protected your PC", לחצו `More info` ואז `Run anyway`.
 
 </div>
