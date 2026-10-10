@@ -17,25 +17,33 @@ $Repo = "orelrockah/GlanceSwitch"
 function Say($msg) { Write-Host "==> $msg" -ForegroundColor Cyan }
 
 Say "Looking up the latest GlanceSwitch release"
-$release = Invoke-RestMethod "https://api.github.com/repos/$Repo/releases/latest" `
-             -Headers @{ "User-Agent" = "GlanceSwitch-installer" }
-$version = $release.tag_name.TrimStart("v")
-$asset = $release.assets | Where-Object { $_.name -like "GlanceSwitch-Setup-*.exe" } | Select-Object -First 1
-$sums = $release.assets | Where-Object { $_.name -eq "SHA256SUMS.txt" } | Select-Object -First 1
-if (-not $asset -or -not $sums) { throw "The latest release has no Windows installer." }
+# Follow the /releases/latest redirect instead of the REST API: the API allows
+# only 60 anonymous requests per hour per IP, which shared networks exhaust.
+$req = [Net.HttpWebRequest]::Create("https://github.com/$Repo/releases/latest")
+$req.Method = "HEAD"
+$req.AllowAutoRedirect = $false
+$req.UserAgent = "GlanceSwitch-installer"
+$resp = $req.GetResponse()
+$location = $resp.Headers["Location"]
+$resp.Close()
+if (-not $location -or $location -notmatch "/tag/(v[0-9][^/]*)$") { throw "Could not find the latest release." }
+$tag = $Matches[1]
+$version = $tag.TrimStart("v")
+$base = "https://github.com/$Repo/releases/download/$tag"
+$assetName = "GlanceSwitch-Setup-$version.exe"
 
 $dir = Join-Path $env:TEMP ("GlanceSwitch-" + [guid]::NewGuid())
 New-Item -ItemType Directory -Path $dir | Out-Null
 try {
-    $setup = Join-Path $dir $asset.name
+    $setup = Join-Path $dir $assetName
     Say "Downloading GlanceSwitch $version"
-    Invoke-WebRequest $asset.browser_download_url -OutFile $setup -UseBasicParsing
-    $sumsText = (Invoke-WebRequest $sums.browser_download_url -UseBasicParsing).Content
+    Invoke-WebRequest "$base/$assetName" -OutFile $setup -UseBasicParsing
+    $sumsText = (Invoke-WebRequest "$base/SHA256SUMS.txt" -UseBasicParsing).Content
     if ($sumsText -is [byte[]]) { $sumsText = [Text.Encoding]::UTF8.GetString($sumsText) }
 
     Say "Verifying the download"
-    $line = ($sumsText -split "`n") | Where-Object { $_ -match ("\s" + [regex]::Escape($asset.name) + "\s*$") }
-    if (-not $line) { throw "$($asset.name) is not listed in SHA256SUMS.txt" }
+    $line = ($sumsText -split "`n") | Where-Object { $_ -match ("\s" + [regex]::Escape($assetName) + "\s*$") }
+    if (-not $line) { throw "$assetName is not listed in SHA256SUMS.txt" }
     $expected = ($line -split "\s+")[0].ToLower()
     $actual = (Get-FileHash $setup -Algorithm SHA256).Hash.ToLower()
     if ($expected -ne $actual) { throw "Checksum mismatch - the download is damaged or was modified." }
