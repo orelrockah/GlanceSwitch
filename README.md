@@ -16,7 +16,25 @@ Get the installer for your computer from the
 
 Intel Macs are not supported yet.
 
-## Install
+## Quick install (one line, no security prompts)
+
+The script downloads the latest release, checks its SHA-256 against
+`SHA256SUMS.txt`, and runs the normal installer, which verifies the installation
+at the end. Read it first if you like: [install.sh](install.sh) · [install.ps1](install.ps1).
+
+**macOS**: paste into Terminal (it asks for your Mac password once):
+```bash
+curl -fsSL https://raw.githubusercontent.com/orelrockah/GlanceSwitch/main/install.sh | bash
+```
+
+**Windows**: paste into PowerShell:
+```powershell
+irm https://raw.githubusercontent.com/orelrockah/GlanceSwitch/main/install.ps1 | iex
+```
+
+Run the same line again to update.
+
+## Install from the download page
 
 **macOS**
 1. Open the `.pkg`. Because the installer is not signed by Apple, macOS shows
@@ -26,7 +44,8 @@ Intel Macs are not supported yet.
    Or, in Terminal: `xattr -d com.apple.quarantine ~/Downloads/GlanceSwitch-*.pkg`
    and open the file again.
 2. Follow the installer. At the end it checks the installation and reports any problem.
-3. Open **GlanceSwitch** from Applications. The eye icon appears in the menu bar. Allow
+3. Open **GlanceSwitch** from Applications. The eye icon appears in the menu bar; its
+   first line shows the installed version. Allow
    **Camera**, **Accessibility** and, for the Double-Ctrl trigger, **Input Monitoring**.
 
 **Windows**
@@ -74,6 +93,12 @@ anywhere.
 הרשת. מורידים את קובץ ההתקנה מ-[הגרסה האחרונה](https://github.com/orelrockah/GlanceSwitch/releases/latest):
 `.pkg` למק עם Apple Silicon, או `.exe` ל-Windows. ההתקנה בודקת את עצמה בסוף. התמונה מהמצלמה
 מעובדת רק במחשב שלך, ושום דבר לא נשמר או נשלח.
+
+**התקנה בשורה אחת, בלי אזהרות אבטחה:** במק מדביקים בטרמינל
+`curl -fsSL https://raw.githubusercontent.com/orelrockah/GlanceSwitch/main/install.sh | bash`,
+וב-Windows מדביקים ב-PowerShell
+`irm https://raw.githubusercontent.com/orelrockah/GlanceSwitch/main/install.ps1 | iex`.
+הסקריפט מוריד את הגרסה האחרונה, בודק את טביעת האצבע שלה ומתקין.
 
 **במק:** אם מופיעה ההודעה "Apple could not verify", לחצו `Done`, פתחו את **הגדרות המערכת ←
 פרטיות ואבטחה**, גללו למטה ולחצו `Open Anyway` ליד קובץ ההתקנה. **ב-Windows:** אם מופיע
